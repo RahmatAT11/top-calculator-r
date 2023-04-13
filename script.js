@@ -27,12 +27,51 @@ const operate = (num1, num2, operator) => {
     }
 };
 
+const createDisplayNumber = (className, number = 0) => {
+    const display = document.createElement("div");
+    display.classList.add(className);
+    display.textContent = number;
+
+    return display
+}
+
+const createDisplayOperator = (className, typeOperator = "+") => {
+    const display = document.createElement("div");
+    display.classList.add(className);
+    display.textContent = typeOperator;
+
+    return display
+}
+
+const prepareCalculator = () => {
+    const numBtn = Array.from(document.querySelectorAll(".calculator-btn-blue-verylight"));
+    const oprtrBtn = Array.from(document.querySelectorAll(".calculator-btn-blue"));
+    const oprtrBtnLong = document.querySelector(".calculator-btn-blue-long");
+    
+    oprtrBtn.push(oprtrBtnLong);
+    return {
+        number: numBtn,
+        oprtrBtn: oprtrBtn
+    };
+}
 let number1 = 0;
 let number2 = 0;
 let operator = "";
 
-console.log(add(1, 2));
-console.log(substract(1, 2));
-console.log(multiply(1, 2));
-console.log(divide(1, 2));
-console.log(operate(1, 2, "-"));
+const contOperation = document.querySelector(".container-operation");
+
+const displayNum1 = createDisplayNumber("display-num");
+const displayOperation = createDisplayOperator("display-operation");
+const displayNum2 = createDisplayNumber("display-num");
+
+contOperation.appendChild(displayNum1);
+contOperation.appendChild(displayOperation);
+contOperation.appendChild(displayNum2);
+
+console.log(prepareCalculator())
+
+// console.log(add(1, 2));
+// console.log(substract(1, 2));
+// console.log(multiply(1, 2));
+// console.log(divide(1, 2));
+// console.log(operate(1, 2, "-"));
