@@ -1,6 +1,6 @@
 // Create function for add, substract, multiply, divide
-let number1 = 0;
-let number2 = 0;
+let number1 = "";
+let number2 = "";
 let operator = "";
 
 const contOperation = document.querySelector(".container-operation");
@@ -54,13 +54,30 @@ const createDisplayOperator = (className, typeOperator = "+") => {
 }
 
 const showNumber = (e) => {
-    console.log(e.target.id)
-
     if (typeof displayNum1 === "undefined") {
-        displayNum1 = createDisplayNumber("display-num", e.target.id)
-        contOperation.appendChild(displayNum1)
+        displayNum1 = createDisplayNumber("display-num", e.target.id);
+        contOperation.appendChild(displayNum1);
     } else {
-        displayNum1.textContent += e.target.id
+        number1 += e.target.id;
+        displayNum1.textContent += number1;
+    }
+
+    // if (typeof displayNum2 === "undefined") {
+    //     displayNum2 = createDisplayNumber("display-num", e.target.id);
+    //     contOperation.appendChild(displayNum2);
+    // } else {
+    //     number2 += e.target.id;
+    //     displayNum2.textContent += number2;
+    // }
+}
+
+const showOperator = (e) => {
+    if (typeof displayOperation === "undefined") {
+        displayOperation = createDisplayOperator("display-operation", e.target.id);
+        contOperation.appendChild(displayOperation)
+    } else {
+        operator = e.target.id;
+        displayOperation.textContent = operator;
     }
 }
 
@@ -75,7 +92,7 @@ const prepareCalculator = () => {
         btn.addEventListener("click", e => showNumber(e))
     })
     oprtrBtn.forEach((btn) => {
-        btn.addEventListener("click", e => showNumber(e))
+        btn.addEventListener("click", e => showOperator(e))
     })
     return {
         number: numBtn,
