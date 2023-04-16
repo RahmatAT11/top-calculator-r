@@ -41,6 +41,7 @@ const createDisplayNumber = (className, number = "0") => {
     const display = document.createElement("div");
     display.classList.add(className);
     display.textContent = number;
+    display.id = number;
 
     return display
 }
@@ -49,6 +50,7 @@ const createDisplayOperator = (className, typeOperator = "+") => {
     const display = document.createElement("div");
     display.classList.add(className);
     display.textContent = typeOperator;
+    display.id = typeOperator;
 
     return display
 }
@@ -57,9 +59,14 @@ const showNumber = (e) => {
     if (typeof displayNum1 === "undefined") {
         displayNum1 = createDisplayNumber("display-num", e.target.id);
         contOperation.appendChild(displayNum1);
+
+        displayNum1.id += number1;
+        number1 += e.target.id;
     } else {
         number1 += e.target.id;
-        displayNum1.textContent += number1;
+
+        displayNum1.textContent = number1;
+        displayNum1.id = number1;
     }
 
     // if (typeof displayNum2 === "undefined") {
