@@ -2,6 +2,7 @@
 let number1 = "";
 let number2 = "";
 let operator = "";
+let total = "";
 let changeNumDisplay = false;
 let stopOperatorChange = false;
 
@@ -10,6 +11,7 @@ const contOperation = document.querySelector(".container-operation");
 let displayNum1 = undefined;
 let displayOperation = undefined;
 let displayNum2 = undefined;
+let displayResult = undefined;
 let numBtn = undefined;
 let oprtrBtn = undefined;
 let oprtrBtnLong = undefined;
@@ -74,6 +76,7 @@ const showNumber = (e) => {
         
                 displayNum2.textContent = number2;
                 displayNum2.id = number2;
+                stopOperatorChange = true;
             }
             break;
     
@@ -105,14 +108,15 @@ const showOperator = (e) => {
     if (typeof displayOperation === "undefined") {
         displayOperation = createDisplayOperator("display-operation", e.target.id);
         contOperation.appendChild(displayOperation)
+        
+        operator = e.target.id;
         changeNumDisplay = true;
     } else if (stopOperatorChange === false){
         operator = e.target.id;
         displayOperation.textContent = operator;
         displayOperation.id = operator;
 
-        console.log("GOD")
-        numBtn.forEach((btn) => btn.removeEventListener("click", console.log(btn)))
+        changeNumDisplay = true;
     }
 }
 
@@ -128,14 +132,41 @@ const prepareCalculator = () => {
     })
     oprtrBtn.forEach((btn) => {
         btn.addEventListener("click", e => showOperator(e))
+        switch (btn.id) {
+            case "=":
+                btn.addEventListener("click", () => {
+                    total = operate(Number(number1), Number(number2), operator);
+                    displayResult = document.querySelector(".display-result");
+                    displayResult.id += toString(total);
+                    displayResult.textContent = total;
+                })
+                break;
+        
+            case "ce":
+                btn.addEventListener("click", () => {
+                    number1 = "";
+                    number2 = "";
+                    operator = "";
+                    total = "";
+                    changeNumDisplay = false;
+                    stopOperatorChange = false;
+
+                    displayNum1.id = number1;;
+                    displayOperation.id = operator;
+                    displayNum2.id = number2;
+                    displayResult.id = 0;
+
+                    displayNum1.textContent = number1;;
+                    displayOperation.textContent = operator;
+                    displayNum2.textContent = number2;
+                    displayResult.textContent = 0;
+                })
+                break;
+        }
     })
-    return {
-        number: numBtn,
-        oprtrBtn: oprtrBtn
-    };
 }
 
-console.log(prepareCalculator())
+prepareCalculator()
 
 // console.log(add(1, 2));
 // console.log(substract(1, 2));
