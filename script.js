@@ -7,6 +7,8 @@ let changeNumDisplay = false;
 let stopOperatorChange = false;
 
 const contOperation = document.querySelector(".container-operation");
+const displayNums = {};
+const numbers = {};
 
 let displayNum1 = undefined;
 let displayOperation = undefined;
@@ -63,37 +65,37 @@ const createDisplayOperator = (className, typeOperator = "+") => {
 }
 
 const showNumber = (e) => {
-    switch (changeNumDisplay) {
-        case true:
-            if (typeof displayNum2 === "undefined") {
-                displayNum2 = createDisplayNumber("display-num", e.target.id);
-                contOperation.appendChild(displayNum2);
+    // switch (changeNumDisplay) {
+    //     case true:
+    //         if (typeof displayNum2 === "undefined") {
+    //             displayNum2 = createDisplayNumber("display-num", e.target.id);
+    //             contOperation.appendChild(displayNum2);
         
-                number2 += e.target.id;
-                stopOperatorChange = true;
-            } else {
-                number2 += e.target.id;
+    //             number2 += e.target.id;
+    //             stopOperatorChange = true;
+    //         } else {
+    //             number2 += e.target.id;
         
-                displayNum2.textContent = number2;
-                displayNum2.id = number2;
-                stopOperatorChange = true;
-            }
-            break;
+    //             displayNum2.textContent = number2;
+    //             displayNum2.id = number2;
+    //             stopOperatorChange = true;
+    //         }
+    //         break;
     
-        default:
-            if (typeof displayNum1 === "undefined") {
-                displayNum1 = createDisplayNumber("display-num", e.target.id);
-                contOperation.appendChild(displayNum1);
+    //     default:
+    //         if (typeof displayNum1 === "undefined") {
+    //             displayNum1 = createDisplayNumber("display-num", e.target.id);
+    //             contOperation.appendChild(displayNum1);
         
-                number1 += e.target.id;
-            } else {
-                number1 += e.target.id;
+    //             number1 += e.target.id;
+    //         } else {
+    //             number1 += e.target.id;
         
-                displayNum1.textContent = number1;
-                displayNum1.id = number1;
-            }
-            break;
-    }
+    //             displayNum1.textContent = number1;
+    //             displayNum1.id = number1;
+    //         }
+    //         break;
+    // }
 
     // if (typeof displayNum2 === "undefined") {
     //     displayNum2 = createDisplayNumber("display-num", e.target.id);
@@ -102,6 +104,25 @@ const showNumber = (e) => {
     //     number2 += e.target.id;
     //     displayNum2.textContent += number2;
     // }
+
+    
+    if (!displayNums[`displayNum${Object.keys(displayNums).length-1}`]) {
+        displayNums[`displayNum${Object.keys(displayNums).length}`] = createDisplayNumber("display-num", e.target.id);
+        contOperation.appendChild(displayNums[`displayNum${Object.keys(displayNums).length-1}`]);
+
+        numbers[`number${Object.keys(numbers).length}`] = e.target.id;
+    
+    } else {
+        const num = numbers[`number${Object.keys(numbers).length-1}`];
+        const numTemp = num + e.target.id;
+        numbers[`number${Object.keys(numbers).length-1}`] = numTemp;
+
+        displayNums[`displayNum${Object.keys(displayNums).length-1}`].textContent = numbers[`number${Object.keys(numbers).length-1}`];
+        displayNums[`displayNum${Object.keys(displayNums).length-1}`].id = numbers[`number${Object.keys(numbers).length-1}`];
+
+        console.log(numbers[`number${Object.keys(numbers).length-1}`])
+        console.log(displayNums[`displayNum${Object.keys(displayNums).length-1}`])
+    }
 }
 
 const showOperator = (e) => {
