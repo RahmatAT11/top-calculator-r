@@ -7,8 +7,12 @@ let changeNumDisplay = false;
 let stopOperatorChange = false;
 
 const contOperation = document.querySelector(".container-operation");
-const displayNums = {};
-const numbers = {};
+
+let displayNums = {};
+let numbers = {};
+
+let displayOps = {};
+let operators = {};
 
 let displayNum1 = undefined;
 let displayOperation = undefined;
@@ -106,38 +110,56 @@ const showNumber = (e) => {
     // }
 
     
-    if (!displayNums[`displayNum${Object.keys(displayNums).length-1}`]) {
-        displayNums[`displayNum${Object.keys(displayNums).length}`] = createDisplayNumber("display-num", e.target.id);
-        contOperation.appendChild(displayNums[`displayNum${Object.keys(displayNums).length-1}`]);
+    if (!changeNumDisplay) {
+        const disNumsLength = `display-num-${Object.keys(displayNums).length}`;
+        displayNums[disNumsLength] = createDisplayNumber("display-num", e.target.id);
+
+        const currDisNum = `display-num-${Object.keys(displayNums).length-1}`;
+        contOperation.appendChild(displayNums[currDisNum]);
 
         numbers[`number${Object.keys(numbers).length}`] = e.target.id;
+        changeNumDisplay = true;
+        stopOperatorChange = false;
+
+        console.log(numbers[`number${Object.keys(numbers).length-1}`])
+        console.log(displayNums[`display-num-${Object.keys(displayNums).length-1}`])
     
     } else {
         const num = numbers[`number${Object.keys(numbers).length-1}`];
         const numTemp = num + e.target.id;
         numbers[`number${Object.keys(numbers).length-1}`] = numTemp;
 
-        displayNums[`displayNum${Object.keys(displayNums).length-1}`].textContent = numbers[`number${Object.keys(numbers).length-1}`];
-        displayNums[`displayNum${Object.keys(displayNums).length-1}`].id = numbers[`number${Object.keys(numbers).length-1}`];
+        const currNum = `number${Object.keys(numbers).length-1}`;
+        const currDisNum = `display-num-${Object.keys(displayNums).length-1}`;
+
+        displayNums[currDisNum].textContent = numbers[currNum];
+        displayNums[currDisNum].id = numbers[currNum];
 
         console.log(numbers[`number${Object.keys(numbers).length-1}`])
-        console.log(displayNums[`displayNum${Object.keys(displayNums).length-1}`])
+        console.log(displayNums[`display-num-${Object.keys(displayNums).length-1}`])
     }
 }
 
 const showOperator = (e) => {
-    if (typeof displayOperation === "undefined") {
-        displayOperation = createDisplayOperator("display-operation", e.target.id);
-        contOperation.appendChild(displayOperation)
+    if (!stopOperatorChange) {
+        const disOpsLength = `display-operator-${Object.keys(displayOps).length}`;
+        displayOps[disOpsLength] = createDisplayOperator("display-operation", e.target.id);
+        contOperation.appendChild(displayOps[disOpsLength])
+
+        console.log(displayOps[disOpsLength]);
         
         operator = e.target.id;
-        changeNumDisplay = true;
-    } else if (stopOperatorChange === false){
-        operator = e.target.id;
-        displayOperation.textContent = operator;
-        displayOperation.id = operator;
+        changeNumDisplay = false;
+        stopOperatorChange = true;
+    } else {
+        const currDisOps = `display-operator-${Object.keys(displayOps).length - 1}`;
+        console.log(currDisOps)
 
-        changeNumDisplay = true;
+        operator = e.target.id;
+        displayOps[currDisOps].textContent = operator;
+        displayOps[currDisOps].id = operator;
+
+        console.log(displayOps[currDisOps]);
     }
 }
 
@@ -165,21 +187,15 @@ const prepareCalculator = () => {
         
             case "ce":
                 btn.addEventListener("click", () => {
-                    number1 = "";
-                    number2 = "";
-                    operator = "";
+                    numbers = {};
+                    operators = {};
                     total = "";
                     changeNumDisplay = false;
                     stopOperatorChange = false;
 
-                    displayNum1.id = number1;;
-                    displayOperation.id = operator;
-                    displayNum2.id = number2;
+                    displayNums = {};
+                    displayOps = {};
                     displayResult.id = 0;
-
-                    displayNum1.textContent = number1;;
-                    displayOperation.textContent = operator;
-                    displayNum2.textContent = number2;
                     displayResult.textContent = 0;
                 })
                 break;
