@@ -7,12 +7,15 @@ let changeNumDisplay = false;
 let stopOperatorChange = false;
 
 const contOperation = document.querySelector(".container-operation");
+const contResult = document.querySelector(".container-result");
 
 let displayNums = {};
 let numbers = {};
+let numCount = 0;
 
 let displayOps = {};
 let operators = {};
+let operatorCount = 0;
 
 let displayNum1 = undefined;
 let displayOperation = undefined;
@@ -120,9 +123,7 @@ const showNumber = (e) => {
         numbers[`number${Object.keys(numbers).length}`] = e.target.id;
         changeNumDisplay = true;
         stopOperatorChange = false;
-
-        console.log(numbers[`number${Object.keys(numbers).length-1}`])
-        console.log(displayNums[`display-num-${Object.keys(displayNums).length-1}`])
+        numCount++;
     
     } else {
         const num = numbers[`number${Object.keys(numbers).length-1}`];
@@ -134,9 +135,6 @@ const showNumber = (e) => {
 
         displayNums[currDisNum].textContent = numbers[currNum];
         displayNums[currDisNum].id = numbers[currNum];
-
-        console.log(numbers[`number${Object.keys(numbers).length-1}`])
-        console.log(displayNums[`display-num-${Object.keys(displayNums).length-1}`])
     }
 }
 
@@ -145,21 +143,22 @@ const showOperator = (e) => {
         const disOpsLength = `display-operator-${Object.keys(displayOps).length}`;
         displayOps[disOpsLength] = createDisplayOperator("display-operation", e.target.id);
         contOperation.appendChild(displayOps[disOpsLength])
-
-        console.log(displayOps[disOpsLength]);
         
-        operator = e.target.id;
-        changeNumDisplay = false;
-        stopOperatorChange = true;
+        if (!(e.target.id === "=")) {
+            operator = e.target.id;
+            changeNumDisplay = false;
+            stopOperatorChange = true;
+            operatorCount++;
+        }
+        
     } else {
-        const currDisOps = `display-operator-${Object.keys(displayOps).length - 1}`;
-        console.log(currDisOps)
+        if (!(e.target.id === "=")) {
+            const currDisOps = `display-operator-${Object.keys(displayOps).length - 1}`;
 
-        operator = e.target.id;
-        displayOps[currDisOps].textContent = operator;
-        displayOps[currDisOps].id = operator;
-
-        console.log(displayOps[currDisOps]);
+            operator = e.target.id;
+            displayOps[currDisOps].textContent = operator;
+            displayOps[currDisOps].id = operator;
+        }
     }
 }
 
@@ -178,8 +177,14 @@ const prepareCalculator = () => {
         switch (btn.id) {
             case "=":
                 btn.addEventListener("click", () => {
+                    number1 = numbers[`number${numCount - 2}`];
+                    number2 = numbers[`number${numCount - 1}`];
+
+                    console.log(number1, typeof Number(number1), number2, typeof Number(number2), operator)
+
                     total = operate(Number(number1), Number(number2), operator);
-                    displayResult = document.querySelector(".display-result");
+
+                    displayResult = contResult.querySelector(".display-result");
                     displayResult.id += toString(total);
                     displayResult.textContent = total;
                 })
@@ -198,6 +203,12 @@ const prepareCalculator = () => {
                     displayResult.id = 0;
                     displayResult.textContent = 0;
                 })
+                break;
+            case "+/-":
+                break;
+            case "%":
+                break;
+            default:
                 break;
         }
     })
