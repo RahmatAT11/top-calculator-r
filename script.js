@@ -151,6 +151,7 @@ const prepareCalculator = () => {
                     operatorCount = 0;
                     changeNumDisplay = false;
                     stopOperatorChange = false;
+                    endOfCalculation = false;
                     
                     while (contOperation.children.length > 0) {
                         contOperation.removeChild(contOperation.firstChild);
