@@ -1,10 +1,10 @@
-// Create function for add, substract, multiply, divide
 let number1 = "";
 let number2 = "";
 let operator = "";
 let total = "";
 let changeNumDisplay = false;
 let stopOperatorChange = false;
+let endOfCalculation = false;
 
 const contOperation = document.querySelector(".container-operation");
 const contResult = document.querySelector(".container-result");
@@ -25,13 +25,13 @@ let numBtn = undefined;
 let oprtrBtn = undefined;
 let oprtrBtnLong = undefined;
 
-const add = (num1, num2) => num1 + num2;
+const add = (num1, num2) => Number(num1 + num2).toFixed(2);
 
-const substract = (num1, num2) => num1 - num2;
+const substract = (num1, num2) => Number(num1 - num2).toFixed(2);
 
-const multiply = (num1, num2) => num1 * num2;
+const multiply = (num1, num2) => Number(num1 * num2).toFixed(2);
 
-const divide = (num1, num2) => num1 / num2;
+const divide = (num1, num2) => Number(num1 / num2).toFixed(2);
 
 const operate = (num1, num2, operator) => {
     switch (operator) {
@@ -71,48 +71,7 @@ const createDisplayOperator = (className, typeOperator = "+") => {
     return display
 }
 
-const showNumber = (e) => {
-    // switch (changeNumDisplay) {
-    //     case true:
-    //         if (typeof displayNum2 === "undefined") {
-    //             displayNum2 = createDisplayNumber("display-num", e.target.id);
-    //             contOperation.appendChild(displayNum2);
-        
-    //             number2 += e.target.id;
-    //             stopOperatorChange = true;
-    //         } else {
-    //             number2 += e.target.id;
-        
-    //             displayNum2.textContent = number2;
-    //             displayNum2.id = number2;
-    //             stopOperatorChange = true;
-    //         }
-    //         break;
-    
-    //     default:
-    //         if (typeof displayNum1 === "undefined") {
-    //             displayNum1 = createDisplayNumber("display-num", e.target.id);
-    //             contOperation.appendChild(displayNum1);
-        
-    //             number1 += e.target.id;
-    //         } else {
-    //             number1 += e.target.id;
-        
-    //             displayNum1.textContent = number1;
-    //             displayNum1.id = number1;
-    //         }
-    //         break;
-    // }
-
-    // if (typeof displayNum2 === "undefined") {
-    //     displayNum2 = createDisplayNumber("display-num", e.target.id);
-    //     contOperation.appendChild(displayNum2);
-    // } else {
-    //     number2 += e.target.id;
-    //     displayNum2.textContent += number2;
-    // }
-
-    
+const showNumber = (e) => {    
     if (!changeNumDisplay) {
         const disNumsLength = `display-num-${Object.keys(displayNums).length}`;
         displayNums[disNumsLength] = createDisplayNumber("display-num", e.target.id);
@@ -120,17 +79,17 @@ const showNumber = (e) => {
         const currDisNum = `display-num-${Object.keys(displayNums).length-1}`;
         contOperation.appendChild(displayNums[currDisNum]);
 
-        numbers[`number${Object.keys(numbers).length}`] = e.target.id;
+        numbers[`number${operatorCount}`] = e.target.id;
         changeNumDisplay = true;
         stopOperatorChange = false;
         numCount++;
     
     } else {
-        const num = numbers[`number${Object.keys(numbers).length-1}`];
+        const num = numbers[`number${numCount-1}`];
         const numTemp = num + e.target.id;
-        numbers[`number${Object.keys(numbers).length-1}`] = numTemp;
+        numbers[`number${numCount-1}`] = numTemp;
 
-        const currNum = `number${Object.keys(numbers).length-1}`;
+        const currNum = `number${numCount-1}`;
         const currDisNum = `display-num-${Object.keys(displayNums).length-1}`;
 
         displayNums[currDisNum].textContent = numbers[currNum];
@@ -140,12 +99,17 @@ const showNumber = (e) => {
 
 const showOperator = (e) => {
     if (!stopOperatorChange) {
-        const disOpsLength = `display-operator-${Object.keys(displayOps).length}`;
+        const disOpsLength = `display-operator-${operatorCount}`;
         displayOps[disOpsLength] = createDisplayOperator("display-operation", e.target.id);
         contOperation.appendChild(displayOps[disOpsLength])
         
         if (!(e.target.id === "=")) {
             operator = e.target.id;
+            operators[`operator-${operatorCount}`] = operator;
+            changeNumDisplay = false;
+            stopOperatorChange = true;
+            operatorCount++;
+        } else {
             changeNumDisplay = false;
             stopOperatorChange = true;
             operatorCount++;
@@ -153,9 +117,10 @@ const showOperator = (e) => {
         
     } else {
         if (!(e.target.id === "=")) {
-            const currDisOps = `display-operator-${Object.keys(displayOps).length - 1}`;
+            const currDisOps = `display-operator-${operatorCount - 1}`;
 
             operator = e.target.id;
+            operators[`operator-${operatorCount - 1}`] = operator;
             displayOps[currDisOps].textContent = operator;
             displayOps[currDisOps].id = operator;
         }
@@ -175,28 +140,21 @@ const prepareCalculator = () => {
     oprtrBtn.forEach((btn) => {
         btn.addEventListener("click", e => showOperator(e))
         switch (btn.id) {
-            case "=":
-                btn.addEventListener("click", () => {
-                    number1 = numbers[`number${numCount - 2}`];
-                    number2 = numbers[`number${numCount - 1}`];
-
-                    console.log(number1, typeof Number(number1), number2, typeof Number(number2), operator)
-
-                    total = operate(Number(number1), Number(number2), operator);
-
-                    displayResult = contResult.querySelector(".display-result");
-                    displayResult.id += toString(total);
-                    displayResult.textContent = total;
-                })
-                break;
-        
             case "ce":
                 btn.addEventListener("click", () => {
                     numbers = {};
                     operators = {};
                     total = "";
+                    number1 = "";
+                    number2 = "";
+                    numCount = 0;
+                    operatorCount = 0;
                     changeNumDisplay = false;
                     stopOperatorChange = false;
+                    
+                    while (contOperation.children.length > 0) {
+                        contOperation.removeChild(contOperation.firstChild);
+                    }
 
                     displayNums = {};
                     displayOps = {};
@@ -208,16 +166,40 @@ const prepareCalculator = () => {
                 break;
             case "%":
                 break;
-            default:
+            case "+":
+            case "-":
+            case "*":
+            case "x":
+            case "/":
+            case "=":
+                btn.addEventListener("click", () => {
+                    if (operatorCount > 1 && !endOfCalculation) {
+                        console.log(`number${numCount - 2}`)
+                        number1 = numbers[`number${numCount - 2}`];
+                        console.log(`number${numCount - 1}`)
+                        number2 = numbers[`number${numCount - 1}`];
+
+                        console.log(number1, number2)
+        
+                        total = operate(Number(number1), Number(number2), operators[`operator-${operatorCount - 2}`]);
+        
+                        displayResult = contResult.querySelector(".display-result");
+                        displayResult.id = total.toString();
+                        displayResult.textContent = total;
+        
+                        number1 = "";
+                        number2 = "";
+                        numbers[`number${numCount - 1}`] = Number(total);
+                        delete numbers[`number${numCount - 2}`];
+                    }
+
+                    if (btn.id === "=") {
+                        endOfCalculation = true;
+                    }
+                });
                 break;
         }
     })
 }
 
 prepareCalculator()
-
-// console.log(add(1, 2));
-// console.log(substract(1, 2));
-// console.log(multiply(1, 2));
-// console.log(divide(1, 2));
-// console.log(operate(1, 2, "-"));
